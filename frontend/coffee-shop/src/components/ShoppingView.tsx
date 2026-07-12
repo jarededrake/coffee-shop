@@ -7,42 +7,23 @@ import ThankYouModal from "../modals/ThankYouModal";
 // import type { MenuItem } from "../types/menu";
 // import type { OrderedItems } from "../types/order";
 
+// ✅ Should be separate props alongside currentUser
 interface ShoppingViewProps {
-  currentUser:
-    | {
-        sessionId: string;
-        name: string;
-        budget: number;
-        currency: string;
-      }
-    | undefined;
+  currentUser: {
+    sessionId: string
+    name: string
+    budget: number
+    currency: string
+  } | undefined
+  isFrontOfLine: boolean        // ← separate prop
+  onLeaveShop: () => void       // ← callback to reset state in App.tsx
 }
 
-export default function ShoppingView({ currentUser }: ShoppingViewProps) {
+export default function ShoppingView({ currentUser, isFrontOfLine, onLeaveShop }: ShoppingViewProps) {
   const [menuItems, setMenuItems] = useState([]);
   const [cart, setCart] = useState([]);
   const [isPurchasing, setIsPurchasing] = useState(false)
   const [showThankYou, setShowThankYou] = useState(false)
-
-  useEffect(() => {
-    const existingUser = localStorage.getItem("user");
-    if (existingUser) return;
-
-    const sessionId = crypto.randomUUID();
-    localStorage.setItem("user", sessionId);
-
-    const fetchData = async () => {
-      const response = await fetch("http://0.0.0.0:5001/api/queue", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ sessionId }),
-      });
-      const result = await response.json();
-      console.log(result);
-    };
-
-    fetchData();
-  }, []);
 
   useEffect(() => {
     const fetchMenuItems = async () => {
@@ -97,6 +78,7 @@ export default function ShoppingView({ currentUser }: ShoppingViewProps) {
       setShowThankYou(true) 
       setCart([])  
       localStorage.removeItem('user')
+      onLeaveShop()
       console.log("Server response:", data);
     } catch (error) {
       console.error("Error sending data:", error);

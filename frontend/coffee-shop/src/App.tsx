@@ -3,18 +3,41 @@ import "./App.css";
 import Button from "./common/Button";
 import { useWebSocket } from "./hooks/useWebSocket";
 import ShoppingView from "./components/ShoppingView";
+import EntranceScreen from "./components/EntranceScreen";
 // TODO: Import your components here as you build them
 // import { MenuScreen } from "./components/MenuScreen";
 // import { WaitingScreen } from "./components/WaitingScreen";
 // import { EntranceScreen } from "./components/EntranceScreen";
 
 function App() {
-  const isAtFrontOfLine = false; // queue[0]?.sessionId === currentUser?.sessionId
-  const hasFeteched = useRef(false);
   const { queue } = useWebSocket("ws://localhost:5001");
   const sessionId = localStorage.getItem("user");
   const currentUser = queue.find((person) => person.sessionId === sessionId);
-  const view = "shopping";
+  const isAtFrontOfLine = queue[0]?.sessionId === currentUser?.sessionId;
+
+  const [hasEntered, setHasEntered] = useState(false);
+
+  async function handleEnterShop() {
+    const existingUser = localStorage.getItem("user");
+    if (existingUser) return;
+
+    const sessionId = crypto.randomUUID();
+    localStorage.setItem("user", sessionId);
+
+    const response = await fetch("http://0.0.0.0:5001/api/queue", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ sessionId }),
+    });
+    const result = await response.json();
+    console.log(result);
+
+    setHasEntered(true);
+  }
+
+  function handleLeaveShop() {
+    setHasEntered(false); 
+  }
 
   return (
     <div className="app">
@@ -35,22 +58,34 @@ function App() {
               >
                 <span className="queue-item__position">#{index + 1}</span>
                 <span className="queue-item__name">{person.name}</span>
-                
               </li>
             ))}
           </ul>
         )}
       </aside>
 
-      {/* ── Main content area ── */}
       <main className="main">
-        {/* {view === "entrance" && (
-          <div className="placeholder">
-            <Button label="Enter Coffee Shop" onClick={handleEnterShop} />
-          </div>
-        )} */}
+        {!hasEntered && (
+          <EntranceScreen onEnter={handleEnterShop} queueCount={queue.length} />
+        )}
 
-        {view === "shopping" && <ShoppingView currentUser={currentUser}/>}
+        {hasEntered && !isAtFrontOfLine && (
+          <div className="waiting">
+            <p>
+              You are #{queue.findIndex((p) => p.sessionId === sessionId) + 1}{" "}
+              in line
+            </p>
+            <p>Please wait your turn</p>
+          </div>
+        )}
+
+        {hasEntered && isAtFrontOfLine && (
+          <ShoppingView
+            currentUser={currentUser}
+            isFrontOfLine={isAtFrontOfLine}
+            onLeaveShop={handleLeaveShop}
+          />
+        )}
       </main>
     </div>
   );

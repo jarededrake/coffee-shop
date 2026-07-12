@@ -1,0 +1,85 @@
+/* ── Overlay — covers entire screen ──────────────────────────────────────── */
+.modal__overlay {
+    position: fixed;
+    inset: 0;                          /* top/right/bottom/left all 0 */
+    background-color: rgba(0, 0, 0, 0.75);
+    backdrop-filter: blur(4px);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    z-index: 1000;
+    /* No pointer-events blocking — overlay is not clickable */
+  }
+  
+  /* ── Modal box ────────────────────────────────────────────────────────────── */
+  .modal {
+    background-color: #1e293b;
+    border: 1px solid #334155;
+    border-radius: 16px;
+    padding: 48px 40px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 16px;
+    max-width: 420px;
+    width: 90%;
+    animation: modal-in 0.25s ease;
+  }
+  
+  @keyframes modal-in {
+    from {
+      opacity: 0;
+      transform: translateY(-16px) scale(0.97);
+    }
+    to {
+      opacity: 1;
+      transform: translateY(0) scale(1);
+    }
+  }
+  
+  /* ── Icon ─────────────────────────────────────────────────────────────────── */
+  .modal__icon {
+    font-size: 48px;
+    animation: bounce 1s ease infinite alternate;
+  }
+  
+  @keyframes bounce {
+    from { transform: translateY(0); }
+    to   { transform: translateY(-8px); }
+  }
+  
+  /* ── Text ─────────────────────────────────────────────────────────────────── */
+  .modal__title {
+    font-size: 22px;
+    font-weight: 700;
+    color: #e2e8f0;
+    text-align: center;
+    margin: 0;
+  }
+  
+  .modal__subtitle {
+    font-size: 14px;
+    color: #64748b;
+    text-align: center;
+    margin: 0;
+  }
+  
+  /* ── Leave button ─────────────────────────────────────────────────────────── */
+  .modal__btn {
+    margin-top: 8px;
+    width: 100%;
+    padding: 14px;
+    background-color: #1d4ed8;
+    color: #ffffff;
+    border: none;
+    border-radius: 8px;
+    font-size: 15px;
+    font-weight: 600;
+    cursor: pointer;
+    transition: background-color 0.2s ease;
+    font-family: inherit;
+  }
+  
+  .modal__btn:hover {
+    background-color: #1e40af;
+  }

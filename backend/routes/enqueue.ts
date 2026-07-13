@@ -24,7 +24,12 @@ router.post("/queue", async (req, res) => {
   try {
     const db = MongoDatabase.getInstance().getDb();
     const queueCollection = db.collection("people-queue");
-    const budgetUSD = parseFloat(faker.finance.amount({ min: 5, max: 50 }))
+    const budgetUSD = parseFloat(faker.finance.amount({ min: 5, max: 50 }));
+
+    const existing = await queueCollection.findOne({ userId });
+    if (existing) {
+      return res.status(200).json(existing); // already in queue
+    }
 
     const newUser: Customer = {
       sessionId: userId,

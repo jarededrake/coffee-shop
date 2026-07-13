@@ -17,26 +17,26 @@ function App() {
 
   const [hasEntered, setHasEntered] = useState(false);
 
-  async function handleEnterShop() {
-    const existingUser = localStorage.getItem("user");
-    if (existingUser) return;
+  useEffect(() => {
+    const existingSessionId = localStorage.getItem("user");
+    if (existingSessionId) return;
 
-    const sessionId = crypto.randomUUID();
-    localStorage.setItem("user", sessionId);
+    const newSessionId = crypto.randomUUID();
+    localStorage.setItem("user", newSessionId);
 
-    const response = await fetch("http://0.0.0.0:5001/api/queue", {
+    fetch("http://localhost:5001/api/queue", {
       method: "POST",
       headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({ sessionId }),
+      body: JSON.stringify({ sessionId: newSessionId }),
     });
-    const result = await response.json();
-    console.log(result);
+  }, []);
 
+  function handleEnterShop() {
     setHasEntered(true);
   }
 
   function handleLeaveShop() {
-    setHasEntered(false); 
+    setHasEntered(false);
   }
 
   return (
@@ -66,13 +66,17 @@ function App() {
 
       <main className="main">
         {!hasEntered && (
-          <EntranceScreen onEnter={handleEnterShop} queueCount={queue.length} />
+          <EntranceScreen
+            onEnter={handleEnterShop}
+            queueCount={queue.length}
+            isAtFrontOfLine={isAtFrontOfLine}
+          />
         )}
 
         {hasEntered && !isAtFrontOfLine && (
           <div className="waiting">
             <p>
-              You are #{queue.findIndex((p) => p.sessionId === sessionId) + 1}{" "}
+              You are #{queue.findIndex((p) => p.sessionId === sessionId) + 1}
               in line
             </p>
             <p>Please wait your turn</p>

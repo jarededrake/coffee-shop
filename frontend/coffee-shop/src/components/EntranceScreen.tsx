@@ -4,9 +4,11 @@ import Button from "../common/Button";
 interface EntranceScreenProps {
   onEnter: () => void;
   queueCount: number;
+  isAtFrontOfLine: boolean;
 }
 
-export default function EntranceScreen({ onEnter, queueCount }: EntranceScreenProps) {
+export default function EntranceScreen({ onEnter, queueCount, isAtFrontOfLine }: EntranceScreenProps) {
+  console.log(isAtFrontOfLine)
   return (
     <div className="entrance">
       
@@ -26,7 +28,7 @@ export default function EntranceScreen({ onEnter, queueCount }: EntranceScreenPr
         <div className="entrance__divider" />
 
         <p className="entrance__queue-info">
-          {queueCount === 0
+          {isAtFrontOfLine
             ? "No one in line — walk right in!"
             : `${queueCount} ${queueCount === 1 ? "person" : "people"} ahead of you`}
         </p>

@@ -1,23 +1,7 @@
 import "../styles/CartPanel.css";
-import "../styles/Button.css"
+import "../styles/Button.css";
 import { formatBudget } from "../utils/convertCurrency";
-
-interface CartItem {
-  _id: string;
-  name: string;
-  price: number;
-  quantity: number;
-}
-
-interface CartPanelProps {
-  isPurchasing: boolean;
-  cart: CartItem[];
-  budget: number;
-  currency: string;
-  onRemoveFromCart: (id: string) => void;
-  onPurchase: () => void;
-  onLeave: () => void;
-}
+import type { CartPanelProps } from "../interface/cart";
 
 export default function CartPanel({
   isPurchasing,
@@ -33,7 +17,6 @@ export default function CartPanel({
   const canAfford = total <= budget;
   return (
     <>
-      {/* ── Cart items ── */}
       <div className="cart__body">
         {isEmpty ? (
           <p className="cart__empty">Your cart is empty</p>
@@ -52,7 +35,6 @@ export default function CartPanel({
                   </button>
                 </div>
 
-                {/* Price breakdown */}
                 <div className="cart-item__details">
                   <span className="cart-item__quantity">
                     {item.quantity}x @ {formatBudget(item.price, currency)}
@@ -71,7 +53,6 @@ export default function CartPanel({
         )}
       </div>
 
-      {/* ── Cart footer ── */}
       <div className="cart__footer">
         {/* Total */}
         {!isEmpty && (
@@ -83,7 +64,6 @@ export default function CartPanel({
           </div>
         )}
 
-        {/* Budget */}
         <div className="cart__budget-row">
           <span className="cart__budget-label">Your Budget</span>
           <span className="cart__budget-amount">

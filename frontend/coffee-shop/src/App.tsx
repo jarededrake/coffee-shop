@@ -1,47 +1,23 @@
-import { useState, useEffect, useRef } from "react";
 import "./App.css";
-import Button from "./common/Button";
-import { useWebSocket } from "./hooks/useWebSocket";
+import { useApp } from "./hooks/useApp";
 import ShoppingView from "./components/ShoppingView";
 import EntranceScreen from "./components/EntranceScreen";
-// TODO: Import your components here as you build them
-// import { MenuScreen } from "./components/MenuScreen";
-// import { WaitingScreen } from "./components/WaitingScreen";
-// import { EntranceScreen } from "./components/EntranceScreen";
+import { AnimatePresence, motion } from "framer-motion";
+import { formatBudget } from "./utils/convertCurrency";
 
 function App() {
-  const { queue } = useWebSocket("ws://localhost:5001");
-  const sessionId = localStorage.getItem("user");
-  const currentUser = queue.find((person) => person.sessionId === sessionId);
-  const isAtFrontOfLine = queue[0]?.sessionId === currentUser?.sessionId;
-
-  const [hasEntered, setHasEntered] = useState(false);
-
-  useEffect(() => {
-    const existingSessionId = localStorage.getItem("user");
-    if (existingSessionId) return;
-
-    const newSessionId = crypto.randomUUID();
-    localStorage.setItem("user", newSessionId);
-
-    fetch("http://localhost:5001/api/queue", {
-      method: "POST",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({ sessionId: newSessionId }),
-    });
-  }, []);
-
-  function handleEnterShop() {
-    setHasEntered(true);
-  }
-
-  function handleLeaveShop() {
-    setHasEntered(false);
-  }
+  const {
+    queue,
+    sessionId,
+    currentUser,
+    isAtFrontOfLine,
+    hasEntered,
+    handleEnterShop,
+    handleLeaveShop,
+  } = useApp();
 
   return (
     <div className="app">
-      {/* ── Left panel: queue sidebar ── */}
       <aside className="sidebar">
         <h2 className="sidebar__title">☕ Current Queue</h2>
 
@@ -49,17 +25,31 @@ function App() {
           <p className="sidebar__empty">No one in line — walk right in!</p>
         ) : (
           <ul className="queue-list">
-            {queue.map((person, index) => (
-              <li
-                key={person.sessionId}
-                className={`queue-item ${
-                  index === 0 ? "queue-item--active" : ""
-                }`}
-              >
-                <span className="queue-item__position">#{index + 1}</span>
-                <span className="queue-item__name">{person.name}</span>
-              </li>
-            ))}
+            <AnimatePresence>
+              {queue.map((person, index) => (
+                <motion.li
+                  key={person.sessionId}
+                  className={`queue-item ${
+                    person.sessionId === sessionId ? "queue-item--active" : ""
+                  }`}
+                  initial={{ opacity: 0, x: -20 }}
+                  animate={{ opacity: 1, x: 0 }}
+                  exit={{ opacity: 0, x: -20 }}
+                  transition={{ duration: 0.25 }}
+                >
+                  <span className="queue-item__position">#{index + 1}</span>
+                  <span className="queue-item__name">
+                    {person.name}
+                    {person.sessionId === sessionId && (
+                      <span className="queue-item__you"> (You)</span>
+                    )}
+                  </span>
+                  <span className="queue-item__budget">
+                    {formatBudget(person.budget, person.currency)}
+                  </span>
+                </motion.li>
+              ))}
+            </AnimatePresence>
           </ul>
         )}
       </aside>
@@ -73,7 +63,7 @@ function App() {
           />
         )}
 
-        {hasEntered && !isAtFrontOfLine && (
+        {hasEntered && !isAtFrontOfLine && currentUser && (
           <div className="waiting">
             <p>
               You are #{queue.findIndex((p) => p.sessionId === sessionId) + 1}

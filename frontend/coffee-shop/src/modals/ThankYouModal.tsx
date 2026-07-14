@@ -6,7 +6,6 @@ interface ThankYouModalProps {
 
 export default function ThankYouModal({ onLeave }: ThankYouModalProps) {
   return (
-    // No onClick on overlay — forces them to use the button
     <div className="modal__overlay">
       <div className="modal">
         <div className="modal__icon">☕</div>

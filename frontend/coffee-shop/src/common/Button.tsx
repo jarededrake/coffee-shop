@@ -1,15 +1,5 @@
-import "../styles/Button.css"
-
-interface ButtonProps {
-  label: string;
-  onClick: () => void;
-  variant?: "primary" | "secondary" | "danger" | "ghost";
-  size?: "small" | "medium" | "large";
-  isDisabled?: boolean;
-  isLoading?: boolean;
-  type?: "button" | "submit" | "reset";
-  fullWidth?: boolean;
-}
+import "../styles/Button.css";
+import type { ButtonProps } from "../interface/button";
 
 export default function Button({
   label,
@@ -26,7 +16,9 @@ export default function Button({
       type={type}
       onClick={onClick}
       disabled={isDisabled || isLoading}
-      className={`btn btn--${variant} btn--${size} ${fullWidth ? "btn--full" : ""}`}
+      className={`btn btn--${variant} btn--${size} ${
+        fullWidth ? "btn--full" : ""
+      }`}
     >
       {isLoading ? <span className="btn__spinner" /> : null}
       {label}

@@ -1,20 +1,6 @@
-import { useState } from "react";
 import "../styles/MenuItems.css";
 import { formatBudget } from "../utils/convertCurrency";
-
-interface MenuItemProps {
-  _id: string;
-  name: string;
-  price: number;
-  totalQuantity: number;
-  currency: string;
-  onAddToCart: (
-    id: string,
-    name: string,
-    price: number,
-    quantity: number
-  ) => void;
-}
+import type { MenuItemProps } from "../interface/menuItem";
 
 export default function MenuItem({
   _id,
@@ -22,19 +8,21 @@ export default function MenuItem({
   price,
   totalQuantity,
   currency,
+  selectedQuantity,
+  cartQuantity,
+  onIncrement,
+  onDecrement,
   onAddToCart,
 }: MenuItemProps) {
   const isOutOfStock = totalQuantity === 0;
-  const [selectedQuantity, setSelectedQuantity] = useState(0);
-  const isDisabled = selectedQuantity === 0
+  const isDisabled = selectedQuantity === 0;
+  const availableQuantity = totalQuantity - selectedQuantity - cartQuantity
+  const allSelected = availableQuantity === 0;
 
   function handleAddToCart() {
-    if (selectedQuantity === 0) return  
-    
-    onAddToCart(_id, name, price, selectedQuantity)
-    
-    setSelectedQuantity(0) 
-}
+    if (selectedQuantity === 0) return;
+    onAddToCart(_id, name, price, selectedQuantity);
+  }
 
   return (
     <div
@@ -43,30 +31,29 @@ export default function MenuItem({
       <div className="menu-item__info">
         <span className="menu-item__name">{name}</span>
         <span className="menu-item__price">{formatBudget(price, currency)}</span>
-        </div>
+      </div>
 
       <span
         className={`menu-item__stock ${
-          totalQuantity <= 5 ? "menu-item__stock--low" : ""
+          availableQuantity <= 5 ? "menu-item__stock--low" : ""
         }`}
       >
-        {isOutOfStock ? "Out of stock" : `${totalQuantity} left`}
+        {isOutOfStock ? "Out of stock" : `${availableQuantity} left`}
       </span>
 
       {!isOutOfStock && (
         <div className="menu-item__actions">
           <div className="quantity-selector">
             <button
-              onClick={() => setSelectedQuantity((q: number) => Math.max(0, q - 1))}
+              onClick={() => onDecrement(_id)}
               className="quantity-selector__btn"
             >
               −
             </button>
             <span className="quantity-selector__value">{selectedQuantity}</span>
             <button
-              onClick={() =>
-                setSelectedQuantity((q: number) => Math.min(totalQuantity, q + 1))
-              }
+              onClick={() => onIncrement(_id)}
+              disabled={allSelected}
               className="quantity-selector__btn"
             >
               +

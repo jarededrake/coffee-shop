@@ -11,7 +11,6 @@ function App() {
     currentUser,
     isAtFrontOfLine,
     hasEntered,
-    queueIsLoading,
     isQueueLoading,
     handleEnterShop,
     handleLeaveShop,

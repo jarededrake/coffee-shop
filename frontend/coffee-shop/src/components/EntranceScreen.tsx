@@ -26,8 +26,8 @@ export default function EntranceScreen({
 
         <p className="entrance__queue-info">
           {isAtFrontOfLine
-            ? "You are first in line — walk right in!"
-            : `${queueCount} ${
+            ? "You are first in — walk right in!"
+            : `${queueCount - 1} ${
                 queueCount === 1 ? "person" : "people"
               } ahead of you`}
         </p>

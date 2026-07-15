@@ -1,0 +1,15 @@
+services:
+
+  backend:
+    image: jarededrake/coffee-shop-backend:latest
+    ports:
+      - "5001:5001"
+    restart: unless-stopped
+
+  frontend:
+    image: jarededrake/coffee-shop-frontend:latest
+    ports:
+      - "5173:5173"
+    depends_on:
+      - backend
+    restart: unless-stopped

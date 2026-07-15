@@ -26,7 +26,6 @@ export function startWebSocketServer(server: Server) {
       clients.delete(ws);
       console.log("Client disconnected");
     });
-    console.log(currentQueue)
   });
 
 

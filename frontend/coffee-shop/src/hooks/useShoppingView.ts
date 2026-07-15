@@ -12,6 +12,7 @@ export function useShoppingView(
   const [quantities, setQuantities] = useState<Record<string, number>>({});
   const [isPurchasing, setIsPurchasing] = useState(false);
   const [showThankYou, setShowThankYou] = useState(false);
+  const [isLeaving, setIsLeaving] = useState(false)
 
   useEffect(() => {
     const fetchMenuItems = async () => {
@@ -121,12 +122,18 @@ export function useShoppingView(
     onLeaveShop();
   }
 
+  function handleOpenConfirmLeavingModal() {
+    setIsLeaving(true)
+  }
+
   return {
     menuItems,
     cart,
     quantities,
     isPurchasing,
     showThankYou,
+    isLeaving,
+    handleOpenConfirmLeavingModal,
     handleIncrement,
     handleDecrement,
     onAddToCart,

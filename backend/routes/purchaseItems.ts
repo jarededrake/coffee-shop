@@ -21,6 +21,7 @@ router.post(
           filter: {
             _id: new ObjectId(item._id),
             name: item.name,
+            quantity: { $gte: item.quantity }
           },
           update: {
             $inc: { quantity: -item.quantity },

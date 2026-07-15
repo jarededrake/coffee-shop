@@ -3,7 +3,6 @@ import { useApp } from "./hooks/useApp";
 import ShoppingView from "./components/ShoppingView";
 import EntranceScreen from "./components/EntranceScreen";
 import { AnimatePresence, motion } from "framer-motion";
-import { formatBudget } from "./utils/convertCurrency";
 
 function App() {
   const {
@@ -12,6 +11,8 @@ function App() {
     currentUser,
     isAtFrontOfLine,
     hasEntered,
+    queueIsLoading,
+    isQueueLoading,
     handleEnterShop,
     handleLeaveShop,
   } = useApp();
@@ -21,9 +22,10 @@ function App() {
       <aside className="sidebar">
         <h2 className="sidebar__title">☕ Current Queue</h2>
 
-        {queue.length === 0 ? (
+        {!isQueueLoading && queue.length === 0 && (
           <p className="sidebar__empty">No one in line — walk right in!</p>
-        ) : (
+        )}
+        {!isQueueLoading && queue.length > 0 && (
           <ul className="queue-list">
             <AnimatePresence>
               {queue.map((person, index) => (
@@ -44,14 +46,12 @@ function App() {
                       <span className="queue-item__you"> (You)</span>
                     )}
                   </span>
-                  <span className="queue-item__budget">
-                    {formatBudget(person.budget, person.currency)}
-                  </span>
                 </motion.li>
               ))}
             </AnimatePresence>
           </ul>
         )}
+        {isQueueLoading && <span className="spinner" />}
       </aside>
 
       <main className="main">

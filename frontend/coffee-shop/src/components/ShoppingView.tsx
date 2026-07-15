@@ -2,6 +2,7 @@ import "../styles/ShoppingView.css";
 import MenuItem from "./MenuItems";
 import CartPanel from "./CartPanel";
 import ThankYouModal from "../modals/ThankYouModal";
+import ConfirmLeaveModal from "../modals/ConfirmLeaveModal";
 import { useShoppingView } from "../hooks/useShoppingView";
 import type { ShoppingViewProps } from "../interface/shoppingView";
 
@@ -15,6 +16,8 @@ export default function ShoppingView({
     quantities,
     isPurchasing,
     showThankYou,
+    isLeaving,
+    handleOpenConfirmLeavingModal,
     handleIncrement,
     handleDecrement,
     onAddToCart,
@@ -27,9 +30,9 @@ export default function ShoppingView({
   return (
     <>
       {showThankYou && <ThankYouModal onLeave={handleLeave} />}
-
+      {isLeaving && <ConfirmLeaveModal onLeave={handleLeave} />}
+      
       <div className="shopping-view">
-        {/* ── Menu Card ── */}
         <div className="card">
           <div className="card__header">
             <h2 className="card__title">☕ Menu</h2>
@@ -53,7 +56,6 @@ export default function ShoppingView({
           </div>
         </div>
 
-        {/* ── Cart Card ── */}
         <div className="card">
           <div className="card__header">
             <h2 className="card__title">🛒 Your Cart</h2>
@@ -65,7 +67,7 @@ export default function ShoppingView({
             isPurchasing={isPurchasing}
             onRemoveFromCart={onRemoveFromCart}
             onPurchase={handlePurchase}
-            onLeave={handleLeave}
+            onLeave={handleOpenConfirmLeavingModal}
           />
         </div>
       </div>

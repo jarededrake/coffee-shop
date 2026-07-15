@@ -2,7 +2,6 @@ import express from "express";
 import { MongoDatabase } from "../database/createDatabaseInstance.ts";
 import { faker } from "@faker-js/faker";
 import type { Customer } from "../interface/customer.ts";
-import generateLocalizedBudget from "../utils/generateLocalizeBudget.ts";
 
 const router = express.Router();
 
@@ -26,9 +25,9 @@ router.post("/queue", async (req, res) => {
     const queueCollection = db.collection("people-queue");
     const budgetUSD = parseFloat(faker.finance.amount({ min: 5, max: 50 }));
 
-    const existing = await queueCollection.findOne({ userId });
+    const existing = await queueCollection.findOne({ sessionId: userId })
     if (existing) {
-      return res.status(200).json(existing); // already in queue
+      return res.status(200).json(existing); 
     }
 
     const newUser: Customer = {

@@ -2,6 +2,7 @@ import "../styles/CartPanel.css";
 import "../styles/Button.css";
 import { formatBudget } from "../utils/convertCurrency";
 import type { CartPanelProps } from "../interface/cart";
+import Button from "../common/Button";
 
 export default function CartPanel({
   isPurchasing,
@@ -44,7 +45,7 @@ export default function CartPanel({
                       !canAfford ? "cart__total-amount--over" : ""
                     }`}
                   >
-                    {formatBudget(total, currency)}
+                    {formatBudget(item.price * item.quantity, currency)}
                   </span>
                 </div>
               </li>
@@ -74,17 +75,21 @@ export default function CartPanel({
         {!canAfford && !isEmpty && (
           <p className="cart__over-budget">⚠️ You're over budget</p>
         )}
-        <button
-          className="cart__purchase-btn"
+        <Button
+          label="Purchase"
+          size="medium"
           onClick={onPurchase}
-          disabled={isEmpty || !canAfford || isPurchasing}
-        >
-          {isPurchasing ? <span className="btn__spinner" /> : "Purchase"}
-        </button>
+          isDisabled={isEmpty || !canAfford || isPurchasing}
+          isLoading={isPurchasing}
+        />
 
-        <button className="cart__leave-btn" onClick={onLeave}>
-          Leave without buying
-        </button>
+        <Button
+          label="Leave without buying"
+          onClick={onLeave}
+          fullWidth={true}
+          variant="ghost-danger"
+          size="small"
+        />
       </div>
     </>
   );

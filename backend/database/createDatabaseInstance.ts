@@ -31,8 +31,7 @@ export class MongoDatabase {
       this.db = this.client.db(this.DB_NAME);
       console.log('Successfully connected to MongoDB.');
 
-      const db = this.client.db("coffee-shop");
-      const collection = db.collection("people-queue");
+      const collection = this.db.collection("people-queue")
 
       const pipeline = [
         { $match: { operationType: { $in: ["insert", "update", "delete"] } } }

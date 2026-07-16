@@ -126,6 +126,10 @@ export function useShoppingView(
     setIsLeaving(true)
   }
 
+  function handleCloseConfirmLeavingModal() {
+    setIsLeaving(false)
+  }
+
   return {
     menuItems,
     cart,
@@ -133,6 +137,7 @@ export function useShoppingView(
     isPurchasing,
     showThankYou,
     isLeaving,
+    handleCloseConfirmLeavingModal,
     handleOpenConfirmLeavingModal,
     handleIncrement,
     handleDecrement,

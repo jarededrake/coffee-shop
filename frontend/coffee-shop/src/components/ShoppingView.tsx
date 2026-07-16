@@ -18,6 +18,7 @@ export default function ShoppingView({
     showThankYou,
     isLeaving,
     handleOpenConfirmLeavingModal,
+    handleCloseConfirmLeavingModal,
     handleIncrement,
     handleDecrement,
     onAddToCart,
@@ -30,7 +31,7 @@ export default function ShoppingView({
   return (
     <>
       {showThankYou && <ThankYouModal onLeave={handleLeave} />}
-      {isLeaving && <ConfirmLeaveModal onLeave={handleLeave} />}
+      {isLeaving && <ConfirmLeaveModal onLeave={handleLeave} onCancel={handleCloseConfirmLeavingModal} />}
       
       <div className="shopping-view">
         <div className="card">

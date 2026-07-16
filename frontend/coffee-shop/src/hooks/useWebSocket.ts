@@ -42,7 +42,7 @@ export const useWebSocket = (url: string) => {
     };
   }, [url]);
 
-  const sendMessage = useCallback((message) => {
+  const sendMessage = useCallback((message: string) => {
     if (socketRef.current && socketRef.current.readyState === WebSocket.OPEN) {
       socketRef.current.send(message);
     } else {

@@ -7,7 +7,6 @@ export default function EntranceScreen({
   queueCount,
   isAtFrontOfLine,
 }: EntranceScreenProps) {
-  console.log(queueCount)
   return (
     <div className="entrance">
       <div className="entrance__glow entrance__glow--left" />

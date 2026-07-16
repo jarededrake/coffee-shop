@@ -7,6 +7,7 @@ export default function EntranceScreen({
   queueCount,
   isAtFrontOfLine,
 }: EntranceScreenProps) {
+  console.log(queueCount)
   return (
     <div className="entrance">
       <div className="entrance__glow entrance__glow--left" />
@@ -26,10 +27,8 @@ export default function EntranceScreen({
 
         <p className="entrance__queue-info">
           {isAtFrontOfLine
-            ? "You are first in — walk right in!"
-            : `${queueCount - 1} ${
-                queueCount === 1 ? "person" : "people"
-              } ahead of you`}
+            ? "You are first in line — walk right in!"
+            : `${queueCount - 1} ${ queueCount - 1 === 1 ? "person" : "people"} ahead of you`}
         </p>
 
         <Button
